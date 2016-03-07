@@ -26,4 +26,4 @@ clean:
 distclean: clean
 	rm -rf project target
 	find quartus/$(BOARD) -type f ! -name '*.qpf' -and ! -name '*.qsf' -exec rm {} \;
-	find quartus/$(BOARD) -mindepth 1 -type d -exec rmdir {} \;
+	find quartus/$(BOARD) -mindepth 1 -type d | xargs rm -rf
