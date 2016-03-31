@@ -1,9 +1,5 @@
 package patmos
 
-import Chisel._
-import Node._
-
-import Constants._
 
 class AluIO() extends Bundle(){
 }
