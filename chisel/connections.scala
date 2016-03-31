@@ -5,21 +5,39 @@ import Node._
 
 import Constants._
 
-class AluIO() extends Bundle(){
+class AluIO() extends Bundle() {
+  val ena = Bool(INPUT)
+  val func = Bits(INPUT, FUNC_WIDTH)
+  val op1 = UInt(INPUT, DATA_WIDTH)
+  val op2 = UInt(INPUT, DATA_WIDTH)
+  val done = Bool(OUTPUT)
+  val result = Bits(OUTPUT, DATA_WIDTH)
 }
 
-class IssueIO() extends Bundle(){
+class IssueIO() extends Bundle() {
+  val ena = Bool(INPUT)
+  val instr = Bits(INPUT, INSTR_WIDTH)
+  val busy = Vec.fill(RS_NUM){ new Bool(INPUT) }
+
+  val rd = Bits(OUTPUT, REG_BITS)
+  val rs = Bits(OUTPUT, REG_BITS)
+  val rt = Bits(OUTPUT, REG_BITS)
+  val RS_sel = Vec.fill(RS_NUM){ new Bool(OUTPUT) }
 }
 
-class CDBIO() extends Bundle(){
-}
-class RegStatusIO() extends Bundle(){
+class CDBIO() extends Bundle() {
+  val ena = Bool(INPUT)
 }
 
-class ReservationStationIO() extends Bundle(){
+class RegStatusIO() extends Bundle() {
+  val ena = Bool(INPUT)
+}
+
+class ReservationStationIO() extends Bundle() {
+  val ena = Bool(INPUT)
 } 
 
-class MainIO() extends Bundle(){
+class MainIO() extends Bundle() {
 }
 
 class RegFileRead() extends Bundle() {
