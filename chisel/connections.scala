@@ -9,19 +9,19 @@ import Constants._
 class IssueRegStat() extends Bundle() {
 
   val rd = Bits(INPUT, REG_BITS)
-  val tag_rd = UInt(INPUT, TAG_BITS)
+  val tag_rd = Bits(INPUT, TAG_BITS)
 
   val rs = Bits(INPUT, REG_BITS)
   val rt = Bits(INPUT, REG_BITS)
-  val tag_rs = UInt(OUTPUT, TAG_BITS)
-  val tag_rt = UInt(OUTPUT, TAG_BITS)
+  val tag_rs = Bits(OUTPUT, TAG_BITS)
+  val tag_rt = Bits(OUTPUT, TAG_BITS)
 }
 
 class IssueRF() extends Bundle() {
   val rs = Bits(INPUT, REG_BITS)
   val rt = Bits(INPUT, REG_BITS)
-  val val_rs = UInt(OUTPUT, DATA_WIDTH)
-  val val_rt = UInt(OUTPUT, DATA_WIDTH)
+  val val_rs = Bits(OUTPUT, DATA_WIDTH)
+  val val_rt = Bits(OUTPUT, DATA_WIDTH)
 }
 
 class RegStatRF() extends Bundle() {
@@ -30,11 +30,11 @@ class RegStatRF() extends Bundle() {
 }
 
 class IssueRS() extends Bundle() {
-  val val_rs = UInt(INPUT, DATA_WIDTH)
-  val val_rt = UInt(INPUT, DATA_WIDTH)
-  val tag_rs = UInt(INPUT, TAG_BITS)
-  val tag_rt = UInt(INPUT, TAG_BITS)
-  val func = UInt(INPUT, FUNC_WIDTH)
+  val val_rs = Bits(INPUT, DATA_WIDTH)
+  val val_rt = Bits(INPUT, DATA_WIDTH)
+  val tag_rs = Bits(INPUT, TAG_BITS)
+  val tag_rt = Bits(INPUT, TAG_BITS)
+  val func = Bits(INPUT, FUNC_WIDTH)
 
   val busy = Bool(OUTPUT) 
   val sel  = Bool(INPUT)
@@ -47,11 +47,11 @@ class RSCDB() extends Bundle() {
   val rtw = Bool(INPUT)
   val ack = Bool(OUTPUT)
   val result_out = Bits(INPUT, DATA_WIDTH) // from RS
-  val tag_out = UInt(INPUT, TAG_BITS)
+  val tag_out = Bits(INPUT, TAG_BITS)
 }
 
 class CDBRegStat() extends Bundle() {
-  val tag = UInt(INPUT, TAG_BITS)
+  val tag = Bits(INPUT, TAG_BITS)
 }
 
 class RegFileRead() extends Bundle() {
