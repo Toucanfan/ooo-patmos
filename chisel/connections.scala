@@ -21,7 +21,7 @@ class IssueRF() extends Bundle() {
   val rs = Bits(INPUT, REG_BITS)
   val rt = Bits(INPUT, REG_BITS)
   val val_rs = UInt(OUTPUT, DATA_WIDTH)
-  val val_rt = UInt(OUTPUT,DATA_WIDTH)
+  val val_rt = UInt(OUTPUT, DATA_WIDTH)
 }
 
 class RegStatRF() extends Bundle() {
@@ -98,9 +98,13 @@ class ReservationStationIO() extends Bundle() {
 
 class IssueIO() extends Bundle() {
   val ena = Bool(INPUT)
-  val instr = Bits(INPUT, INSTR_WIDTH)
+  val rs = Bits(INPUT, REG_BITS)
+  val rt = Bits(INPUT, REG_BITS)
+  val rd = Bits(INPUT, REG_BITS)
+  val useImm = Bool(INPUT)
+  val imm = Bits(INPUT, DATA_WIDTH)
+  val func = Bits(INPUT, FUNC_WIDTH)
   val busy = Bool(OUTPUT)
-
   val RS_io = Vec.fill(RS_NUM){ new IssueRS().flip() }
   val regstat_io = new IssueRegStat().flip()
   val RF_io = new IssueRF().flip()

@@ -1,5 +1,6 @@
 PROJNAME = skeleton
 MAIN = skeleton.Skeleton
+MODULE ?= MAIN
 
 HWBUILDDIR ?= $(CURDIR)/hwbuild
 BOARD ?= altde2-115
@@ -27,3 +28,9 @@ distclean: clean
 	rm -rf project target
 	find quartus/$(BOARD) -type f ! -name '*.qpf' -and ! -name '*.qsf' -exec rm {} \;
 	find quartus/$(BOARD) -mindepth 1 -type d | xargs rm -rf
+
+modtest:
+	$(SBT) "run-main $(MODULE) --cse --backend c --compile --vcd --test --genHarness --targetDir build"
+
+modcomp:
+	$(SBT) "run-main $(MODULE) --cse --backend v --compile --vcd --targetDir build"
