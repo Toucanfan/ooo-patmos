@@ -4,11 +4,11 @@ import Chisel._
 import Node._
 
 import Constants._
-import connections._
+//import connections._
 
 class Issue() extends Module {
   val io = new IssueIO()
-
+/*
   val RSTYPE_INT::Nil = Enum(UInt(), 1)
 
   /* DECODE */
@@ -27,5 +27,5 @@ class Issue() extends Module {
     io.RS_io(RS_idx).sel := Bool(true)
   }
 
-  io.busy := wait
+  io.busy := wait*/
 }

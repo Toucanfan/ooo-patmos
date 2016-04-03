@@ -43,19 +43,17 @@ package patmos
 import Chisel._
 import Node._
 
-import util.log2Up
-
 object Constants {
 
   /* ooo-patmos constants */
   val FUNC_WIDTH = 4
   val RS_NUM = 4
-  val TAG_BITS = log2up(RS_NUM + 1) /* The number of bits in a tag */
+  val TAG_BITS =3// log2up(RS_NUM + 1) /* The number of bits in a tag */
 
-  val CLOCK_FREQ = util.Config.getConfig.frequency
+//  val CLOCK_FREQ = util.Config.getConfig.frequency
 
-  val PIPE_COUNT = util.Config.getConfig.pipeCount
-
+  val PIPE_COUNT = 16//= util.Config.getConfig.pipeCount
+/*
   val ISPM_SIZE = util.Config.getConfig.ISPM.size
   val DSPM_SIZE = util.Config.getConfig.DSPM.size
 
@@ -108,9 +106,9 @@ object Constants {
   val EXC_SRC_BITS = 5
   val EXC_COUNT  = 1 << EXC_SRC_BITS
   val INTR_COUNT = 16
-
+*/
   // Memory management unit
-  val HAS_MMU = util.Config.getConfig.mmu
+ // val HAS_MMU = util.Config.getConfig.mmu
   val MMU_IO_OFFSET = 7
 
   // The PC counts in words. 30 bits are enough for the 4 GB address space.
