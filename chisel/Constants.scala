@@ -51,6 +51,7 @@ object Constants {
   val FUNC_WIDTH = 4
   val RS_NUM = 4
   val TAG_BITS = log2up(RS_NUM + 1) /* The number of bits in a tag */
+  val OPC_BITS = 3
 
   val CLOCK_FREQ = util.Config.getConfig.frequency
 
