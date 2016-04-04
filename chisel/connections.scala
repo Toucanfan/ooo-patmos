@@ -93,6 +93,10 @@ class ReservationStationIO() extends Bundle() {
   val ena = Bool(INPUT)
   val issue_io = new IssueRS()
   val CDB_io = new RSCDB().flip()
+/*used for debugging*/
+// val rs_state = UInt(OUTPUT)
+// val rs_value_rt = Bits(OUTPUT)
+// val rs_value_rs = Bits(OUTPUT)
 
 } 
 
