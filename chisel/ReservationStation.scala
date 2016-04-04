@@ -21,7 +21,7 @@ class ReservationStation(RS_id: Int) extends Module {
   io.issue_io.busy := Bool(false)
   io.CDB_io.rtw := Bool(false)
   io.CDB_io.result_out := reg_alu_res
-  io.CDB_io.tag_out := Bits(0)
+  io.CDB_io.tag_out := rs_id
   io.rs_state:= UInt(0) 
 
 		io.rs_value_rs := Bits(0)
@@ -411,6 +411,7 @@ class rsTesterCase4(dut: ReservationStation) extends Tester(dut) {
   expect(dut.io.rs_state, 6)
   step(10) // wait for ack before writing to CDB
   expect(dut.io.CDB_io.result_out, 5)
+  expect(dut.io.CDB_io.tag_out, 1)
   expect(dut.io.rs_state, 6)
   poke(dut.io.CDB_io.ack, (true))
   step(1) 
@@ -426,7 +427,7 @@ object rsTester {
   def main(args: Array[String]): Unit = {
     chiselMainTest(args,
       () => Module(new ReservationStation(1))) {
-        dut => new rsTesterCase3(dut)
+        dut => new rsTesterCase4(dut)
       }
   }
 }
