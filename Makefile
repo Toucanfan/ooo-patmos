@@ -30,7 +30,7 @@ distclean: clean
 	find quartus/$(BOARD) -mindepth 1 -type d | xargs rm -rf
 
 modtest:
-	$(SBT) "run-main $(MODULE) --cse --backend c --compile --vcd --test --genHarness --targetDir build"
+	$(SBT) "run-main $(MODULE) --cse --backend c --compile --vcd --test --genHarness --targetDir $(HWBUILDDIR)"
 
 modcomp:
-	$(SBT) "run-main $(MODULE) --cse --backend v --compile --vcd --targetDir build"
+	$(SBT) "run-main $(MODULE) --cse --backend v --compile --vcd --targetDir $(HWBUILDDIR)"
