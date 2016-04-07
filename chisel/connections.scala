@@ -76,12 +76,16 @@ class Result() extends Bundle() {
 
 
 class CDBIO() extends Bundle() {
-  /* This is ONE arbiter */
+ /* This is ONE arbiter */
   val ena = Bool(INPUT)
-  val RS_io = new RSCDB()
+  //val RS_io = new RSCDB()
+  val RS_io = Vec.fill(RS_NUM) { new RSCDB() }
   val regstat_io = new CDBRegStat().flip()
-
-
+  val token = Bits(OUTPUT,1)
+  val token1 = Bits(OUTPUT,1)
+  val token2 = Bits(OUTPUT,1)
+  val token3 = Bits(OUTPUT,1)
+  
 }
 
 class RegStatusIO() extends Bundle() {
@@ -89,7 +93,6 @@ class RegStatusIO() extends Bundle() {
   val issue_io = new IssueRegStat()
   val RF_io = new RegStatRF().flip()
   val CDB_io = new CDBRegStat()
-
 }
 
 class ReservationStationIO() extends Bundle() {
