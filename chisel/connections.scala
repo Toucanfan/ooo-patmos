@@ -52,6 +52,7 @@ class RSCDB() extends Bundle() {
 
 class CDBRegStat() extends Bundle() {
   val tag = Bits(INPUT, TAG_BITS)
+  val valid= Bool(OUTPUT)
 }
 
 class RegFileRead() extends Bundle() {
@@ -78,6 +79,8 @@ class CDBIO() extends Bundle() {
   val ena = Bool(INPUT)
   val RS_io = new RSCDB()
   val regstat_io = new CDBRegStat().flip()
+
+  
 }
 
 class RegStatusIO() extends Bundle() {
