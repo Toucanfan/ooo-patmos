@@ -25,7 +25,7 @@ class RegStatus() extends Module {
    issue_io.tag_rt := Bits(0)
    RF_io.rd_en := Bool(false)
    RF_io.rd_addr := Bits(0)
-   io.test := Bits(7)
+   //io.test := Bits(7)
    // debug
 
    when (io.ena) {
@@ -116,7 +116,7 @@ class RSTest2(d: RegStatus) extends Tester(d) {
 
    poke(d.io.ena, (true))
    step(1)
-   
+
    // reg3 initial value
    poke(d.io.issue_io.rs, 3)
    expect(d.io.issue_io.tag_rs, 0)
@@ -137,7 +137,7 @@ class RSTest2(d: RegStatus) extends Tester(d) {
    expect(d.io.RF_io.rd_addr, 3)
    expect(d.io.RF_io.rd_en, 1)
    step(2)
-   peek(d.io.test)
+   //peek(d.io.test)
    poke(d.io.CDB_io.valid, (false))
    step(2)
 
