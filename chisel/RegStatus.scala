@@ -44,7 +44,7 @@ class RegStatus() extends Module {
                RF_io.rd_addr:= change_addr
                state := st_write
 
-               io.test := change_addr
+               //io.test := change_addr
             }
             is(st_write) {
                reg_stat(change_addr):= Bits(0)
@@ -141,7 +141,7 @@ class RSTest2(d: RegStatus) extends Tester(d) {
    poke(d.io.CDB_io.valid, (false))
    step(2)
 
-   peek(d.io.test)
+   //peek(d.io.test)
 
    expect(d.io.RF_io.rd_en, 0)
    poke(d.io.issue_io.rs, 5)

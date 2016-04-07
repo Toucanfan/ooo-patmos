@@ -10,6 +10,7 @@ class IssueRegStat() extends Bundle() {
 
   val rd = Bits(INPUT, REG_BITS)
   val tag_rd = Bits(INPUT, TAG_BITS)
+  val valid = Bool(INPUT)
 
   val rs = Bits(INPUT, REG_BITS)
   val rt = Bits(INPUT, REG_BITS)
@@ -36,9 +37,9 @@ class IssueRS() extends Bundle() {
   val tag_rt = Bits(INPUT, TAG_BITS)
   val func = Bits(INPUT, FUNC_WIDTH)
 
-  val busy = Bool(OUTPUT) 
+  val busy = Bool(OUTPUT)
   val sel  = Bool(INPUT)
- 
+
 }
 
 class RSCDB() extends Bundle() {
@@ -52,7 +53,7 @@ class RSCDB() extends Bundle() {
 
 class CDBRegStat() extends Bundle() {
   val tag = Bits(INPUT, TAG_BITS)
-  val valid= Bool(OUTPUT)
+  val valid= Bool(INPUT)
 }
 
 class RegFileRead() extends Bundle() {
@@ -80,7 +81,7 @@ class CDBIO() extends Bundle() {
   val RS_io = new RSCDB()
   val regstat_io = new CDBRegStat().flip()
 
-  
+
 }
 
 class RegStatusIO() extends Bundle() {
@@ -88,7 +89,7 @@ class RegStatusIO() extends Bundle() {
   val issue_io = new IssueRegStat()
   val RF_io = new RegStatRF().flip()
   val CDB_io = new CDBRegStat()
-  
+
 }
 
 class ReservationStationIO() extends Bundle() {
@@ -101,7 +102,7 @@ class ReservationStationIO() extends Bundle() {
 // val rs_value_rt = Bits(OUTPUT)
 // val rs_value_rs = Bits(OUTPUT)
 
-} 
+}
 
 class IssueIO() extends Bundle() {
   val ena = Bool(INPUT)
@@ -125,4 +126,3 @@ class RegFileIO() extends Bundle() {
   val rfRead = new RegFileRead()
   val rfWrite = Vec.fill(PIPE_COUNT) { new Result().asInput }
 }
-
