@@ -43,6 +43,7 @@ class IssueRS() extends Bundle() {
 }
 
 class RSCDB() extends Bundle() {
+  val valid = Bool(OUTPUT) //! /* Do we need this signal? */
   val result_in = Bits(OUTPUT, DATA_WIDTH) // from CDB
   val tag_in = Bits(OUTPUT, TAG_BITS)
   val rtw = Bool(INPUT)
