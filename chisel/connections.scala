@@ -86,7 +86,7 @@ class CDBIO() extends Bundle() {
   val token1 = Bits(OUTPUT,1)
   val token2 = Bits(OUTPUT,1)
   val token3 = Bits(OUTPUT,1)
-  
+
 }
 
 class RegStatusIO() extends Bundle() {
@@ -94,6 +94,9 @@ class RegStatusIO() extends Bundle() {
   val issue_io = new IssueRegStat()
   val RF_io = new RegStatRF().flip()
   val CDB_io = new CDBRegStat()
+
+  // FOR debugging
+  //val test = Bits(OUTPUT)
 }
 
 class ReservationStationIO() extends Bundle() {
