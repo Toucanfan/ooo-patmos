@@ -28,6 +28,7 @@ class RegStatus() extends Module {
 
    when (io.ena) {
 
+      // tag retreival
       issue_io.tag_rs := reg_stat(issue_io.rs)
       issue_io.tag_rt := reg_stat(issue_io.rt)
 
@@ -40,14 +41,17 @@ class RegStatus() extends Module {
          switch(state) {
             is(st_read) {
 
-               // adds valid bit in front of tag
+               // adds valid bit in front of tag 1XXX
                change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
 
+               // outputs address and enable line
                RF_io.rd_en := Bool(true)
                RF_io.rd_addr:= change_addr
                state := st_write
             }
             is(st_write) {
+
+               // resets tag to 0000
                reg_stat(change_addr):= Bits(0)
                state := st_read
             }
