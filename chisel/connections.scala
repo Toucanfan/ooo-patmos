@@ -36,10 +36,11 @@ class IssueRS() extends Bundle() {
   val tag_rs = Bits(INPUT, TAG_BITS)
   val tag_rt = Bits(INPUT, TAG_BITS)
   val func = Bits(INPUT, FUNC_WIDTH)
+  val mem_op = Bool(INPUT) // 0: Store, 1: Load
+  val rs_id = Bits(OUTPUT, TAG_BITS)
 
   val busy = Bool(OUTPUT)
   val sel  = Bool(INPUT)
-
 }
 
 class RSCDB() extends Bundle() {
@@ -123,6 +124,9 @@ class IssueIO() extends Bundle() {
   val RS_io = Vec.fill(RS_NUM){ new IssueRS().flip() }
   val regstat_io = new IssueRegStat().flip()
   val RF_io = new IssueRF().flip()
+}
+
+class LoadStoreQIO() extends ReservationStationIO() {
 }
 
 class MainIO() extends Bundle() {

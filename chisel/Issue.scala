@@ -28,7 +28,7 @@ class Issue() extends Module {
   io.busy := RS_busy
 
   /* DECODE */
-  io.regstat_io.tag_rd := RS_idx + UInt(1) /* we add 1 because tag 0 means val in RF */
+  io.regstat_io.tag_rd := io.RS_io(RS_idx).rs_id
   io.regstat_io.rd := io.rd
   io.regstat_io.rs := io.rs
   io.regstat_io.rt := io.rt
@@ -43,11 +43,13 @@ class IssueTest(dut: Issue) extends Tester(dut) {
   poke(dut.io.useImm, 0)
   poke(dut.io.func, int(FUNC_ADD))
   poke(dut.io.RS_io(0).busy, 1)
+  poke(dut.io.RS_io(0).rs_id, 2)
+  poke(dut.io.RS_io(1).rs_id, 3)
   poke(dut.io.regstat_io.tag_rs, 2)
   poke(dut.io.regstat_io.tag_rt, 0)
   poke(dut.io.RF_io.val_rs, 20)
   poke(dut.io.RF_io.val_rt, 16)
-  step(1)
+
   expect(dut.io.RS_io(0).val_rs, 20)
   expect(dut.io.RS_io(0).val_rt, 16)
   expect(dut.io.RS_io(0).tag_rs, 2)
@@ -58,7 +60,7 @@ class IssueTest(dut: Issue) extends Tester(dut) {
   expect(dut.io.RF_io.rs, 3)
   expect(dut.io.RF_io.rt, 2)
   expect(dut.io.regstat_io.rd, 1)
-  expect(dut.io.regstat_io.tag_rd, 2)
+  expect(dut.io.regstat_io.tag_rd, 3)
   expect(dut.io.regstat_io.rs, 3)
   expect(dut.io.regstat_io.rt, 2)
 }
