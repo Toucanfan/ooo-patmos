@@ -130,6 +130,18 @@ class LoadStoreQIO() extends ReservationStationIO() {
 }
 
 class MainIO() extends Bundle() {
+    val ena = Bool(INPUT)
+    val rs = Bits(INPUT, REG_BITS)
+    val rt = Bits(INPUT, REG_BITS)
+    val rd = Bits(INPUT, REG_BITS)
+    val useImm = Bool(INPUT)
+    val imm = Bits(INPUT, DATA_WIDTH)
+    val func = Bits(INPUT, FUNC_WIDTH)
+    val busy = Bool(OUTPUT)
+    val wdata = Bits(INPUT, DATA_WIDTH)
+    val waddr = Bits(INPUT, REG_BITS)
+    val wvalid = Bool(INPUT)
+    val rdata = Bits(OUTPUT,DATA_WIDTH)
 }
 
 class RegFileIO() extends Bundle() {
