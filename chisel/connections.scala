@@ -127,6 +127,15 @@ class IssueIO() extends Bundle() {
 }
 
 class LoadStoreQIO() extends ReservationStationIO() {
+  val q0_state = UInt(OUTPUT, 4)
+  val q0_mem_op = Bool(OUTPUT)
+  val q0_tag_rs = Bits(OUTPUT, TAG_BITS)
+  val q0_tag_ra = Bits(OUTPUT, TAG_BITS)
+  val q1_state = UInt(OUTPUT, 4)
+  val q1_mem_op = Bool(OUTPUT)
+  val q1_tag_rs = Bits(OUTPUT, TAG_BITS)
+  val q1_tag_ra = Bits(OUTPUT, TAG_BITS)
+  val testtrue = Bool(OUTPUT)
 }
 
 class MainIO() extends Bundle() {
