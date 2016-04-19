@@ -38,10 +38,6 @@ issue.io.RF_io.val_rs <> regFile.io.rfRead.rsData(0)
 
 issue.io.RF_io.rt <> regFile.io.rfRead.rsAddr(1)
 issue.io.RF_io.val_rt <> regFile.io.rfRead.rsData(1)
-//  issue.io.busy <> busy
-
-//  issue.io.RS_io <> rStations.issue
-
 
 
 
@@ -73,7 +69,7 @@ step(1)
 expect(dut.issue.io.RF_io.rs,2) 
 expect(dut.regFile.io.rfRead.rsAddr(0),2)
 expect(dut.issue.io.RF_io.val_rs,10)
-expect(dut.regFile.io.rfRead.rsData(0),0)
+expect(dut.regFile.io.rfRead.rsData(0),10)
 step(1)
 
 
