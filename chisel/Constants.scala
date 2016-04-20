@@ -131,10 +131,10 @@ object Constants {
   val BYTE_WIDTH = 8
   val BYTES_PER_WORD = DATA_WIDTH / BYTE_WIDTH
 
-  val OPCODE_ALUI = Bits("b00")
-  val OPCODE_ALU = Bits("b01000")
-  val OPCODE_SPC = Bits("b01001")
-  val OPCODE_LDT = Bits("b01010")
+  val OPCODE_ALUI = Bits("b00")     // OOO PATMOS
+  val OPCODE_ALU = Bits("b01000")   // OOO PATMOS
+  val OPCODE_SPC = Bits("b01001")   // OOO PATMOS
+  val OPCODE_LDT = Bits("b01010")   // OOO PATMOS
   val OPCODE_STT = Bits("b01011")
 
   val OPCODE_STC = Bits("b01100")
@@ -153,7 +153,7 @@ object Constants {
 
   val OPCODE_ALUL = Bits("b11111")
 
-  val OPC_ALUR  = Bits("b000")
+  val OPC_ALUR  = Bits("b000") // OOO PATMOS
   val OPC_ALUU  = Bits("b001")
   val OPC_ALUM  = Bits("b010")
   val OPC_ALUC  = Bits("b011")
@@ -175,17 +175,17 @@ object Constants {
   val MTYPE_C = Bits("b10")
   val MTYPE_M = Bits("b11")
 
-  val FUNC_ADD = Bits("b0000")
-  val FUNC_SUB = Bits("b0001")
-  val FUNC_XOR = Bits("b0010")
-  val FUNC_SL = Bits("b0011")
-  val FUNC_SR = Bits("b0100")
-  val FUNC_SRA = Bits("b0101")
-  val FUNC_OR = Bits("b0110")
-  val FUNC_AND = Bits("b0111")
-  val FUNC_NOR = Bits("b1011")
-  val FUNC_SHADD = Bits("b1100")
-  val FUNC_SHADD2 = Bits("b1101")
+  val FUNC_ADD = Bits("b0000") //OOO PATMOS
+  val FUNC_SUB = Bits("b0001") //OOO PATMOS
+  val FUNC_XOR = Bits("b0010") //OOO PATMOS
+  val FUNC_SL = Bits("b0011") //OOO PATMOS
+  val FUNC_SR = Bits("b0100") //OOO PATMOS
+  val FUNC_SRA = Bits("b0101") //OOO PATMOS
+  val FUNC_OR = Bits("b0110") //OOO PATMOS
+  val FUNC_AND = Bits("b0111") //OOO PATMOS
+  val FUNC_NOR = Bits("b1011") //OOO PATMOS
+  val FUNC_SHADD = Bits("b1100") //OOO PATMOS
+  val FUNC_SHADD2 = Bits("b1101") //OOO PATMOS
 
   val MFUNC_MUL = Bits("b0000")
   val MFUNC_MULU = Bits("b0001")
