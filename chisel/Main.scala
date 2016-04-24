@@ -139,11 +139,27 @@ class TestMain(dut: Main) extends Tester(dut) {
    expect(dut.issue.io.RS_io(0).func, 0)
    expect(dut.issue.io.RS_io(0).sel,1)
 
-   step(1)
+   expect(dut.rStations(0).io.issue_io.val_rs,1)
+   expect(dut.rStations(0).io.issue_io.val_rt, 1)
+   expect(dut.rStations(0).io.issue_io.tag_rt, 0)
+   expect(dut.rStations(0).io.issue_io.tag_rs, 0)
+   /* FUNC AND SEL ARE NOT PASSED CORRECTLY ?!*/
+   expect(dut.rStations(0).io.issue_io.func, 0)
+   expect(dut.rStations(0).io.issue_io.sel,1)
 
    step(1)
-   expect(dut.cdb.io.RS_io(0).result_in, 2)
+
+   expect(dut.rStations(0).io.CDB_io.result_in, 2)
+   expect(dut.rStations(0).io.CDB_io.result_out, 2)
+
    step(1)
+   expect(dut.rStations(0).io.CDB_io.result_in, 2)
+   expect(dut.rStations(0).io.CDB_io.result_out, 2)
+   step(1)
+
+
+   expect(dut.rStations(0).io.CDB_io.result_in, 2)
+   expect(dut.rStations(0).io.CDB_io.result_out, 2)
    expect(dut.cdb.io.RS_io(0).result_out, 2)
    step(1)
    expect(dut.cdb.io.RS_io(0).result_out, 2)
