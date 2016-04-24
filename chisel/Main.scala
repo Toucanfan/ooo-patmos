@@ -13,7 +13,7 @@ class Main() extends Module {
    /* =================================================*/
    val issue = Module(new Issue())
    val cdb = Module (new CDB() )
-   val rStations = Module (new ReservationStation(RS_NUM))
+   //val rStations = Module (new ReservationStation(RS_NUM))
    val regStatus = Module (new RegStatus())
    val regFile = Module(new RegisterFile())
    val regstat_io = new IssueRegStat().flip()
@@ -29,8 +29,19 @@ class Main() extends Module {
    // val RS_io = Vec.fill(RS_NUM){ new IssueRS().flip() }
 
    for (i <- 0 until RS_NUM) {
+
+      /* enable each reservation station */
       rStations(i).io.ena <> io.ena
+
+      /* issue unit connections to each reservation station */
       issue.io.RS_io(i).val_rs <> rStations(i).io.issue_io.val_rs
+      issue.io.RS_io(i).val_rt <> rStations(i).io.issue_io.val_rt
+      issue.io.RS_io(i).tag_rs <> rStations(i).io.issue_io.tag_rs
+      issue.io.RS_io(i).tag_rt <> rStations(i).io.issue_io.tag_rt
+      issue.io.RS_io(i).rs_id <> rStations(i).io.issue_io.rs_id
+
+      /* reservation station to CDB */
+      rStations(i).io.CDB_io.valid <> cdb.io.RS_io(i).valid
    }
 
    /* =================================================*/
@@ -39,10 +50,9 @@ class Main() extends Module {
 
    issue.io.ena <> io.ena
    cdb.io.ena <> io.ena
-   rStations.io.ena <> io.ena
+   //rStations.io.ena <> io.ena
    regStatus.io.ena <> io.ena
    regFile.io.ena <> io.ena
-   regstat_io.ena <> io.ena
    //LSQ.io.ena <> io.ena
 
    issue.io.rs <> io.rs
@@ -72,9 +82,6 @@ class Main() extends Module {
 
    issue.io.RF_io.rt <> regFile.io.rfRead.rsAddr(1)
    issue.io.RF_io.val_rt <> regFile.io.rfRead.rsData(1)
-
-   /* -------------------------------------------------*/
-
 }
 class TestMain(dut: Main) extends Tester(dut) {
    poke(dut.io.ena,1)
