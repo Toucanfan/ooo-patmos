@@ -83,10 +83,10 @@ class CDBIO() extends Bundle() {
   //val RS_io = new RSCDB()
   val RS_io = Vec.fill(RS_NUM) { new RSCDB() }
   val regstat_io = new CDBRegStat().flip()
-  val token = Bits(OUTPUT,1)
-  val token1 = Bits(OUTPUT,1)
-  val token2 = Bits(OUTPUT,1)
-  val token3 = Bits(OUTPUT,1)
+  //val token = Bits(OUTPUT,1)
+  //val token1 = Bits(OUTPUT,1)
+  //val token2 = Bits(OUTPUT,1)
+  //val token3 = Bits(OUTPUT,1)
 
 }
 

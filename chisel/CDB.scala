@@ -64,30 +64,59 @@ class CDB() extends Module {
 
 
   //===========================================
-
-io.token := dff(0)
-io.token1 := dff(1)
-io.token2 := dff(2)
-io.token3 := dff(3)
+//DEBUG SIGNALS
+//io.token := dff(0)
+//io.token1 := dff(1)
+//io.token2 := dff(2)
+//io.token3 := dff(3)
 }
 
 
 class cdbTestRingCounter(dut: CDB) extends Tester(dut) {
 poke(dut.io.ena,1)
-peek(dut.io.token)
+/*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
 peek(dut.io.token3)
-
+*/
 step(1)
 
 poke(dut.io.ena,0)
-
-
-peek(dut.io.token)
+/*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
 peek(dut.io.token3)
+*/
+
+peek(dut.io.regstat_io.tag)
+peek(dut.io.regstat_io.valid)
+
+ 
+poke(dut.io.RS_io(0).rtw,0)
+poke(dut.io.RS_io(1).rtw,1)
+poke(dut.io.RS_io(0).result_out,1)
+poke(dut.io.RS_io(1).result_out,2)
+poke(dut.io.RS_io(0).tag_out,0)
+poke(dut.io.RS_io(1).tag_out,1)
+
+
+peek(dut.io.RS_io(0).result_in)
+peek(dut.io.RS_io(1).result_in)
+peek(dut.io.RS_io(0).tag_in)
+peek(dut.io.RS_io(1).tag_in)
+
+
+peek(dut.io.RS_io(0).ack)
+peek(dut.io.RS_io(1).ack)
+
+step(1) 
+poke(dut.io.ena,0)
+
+/*peek(dut.io.token)
+peek(dut.io.token1)
+peek(dut.io.token2)
+peek(dut.io.token3)
+*/
 
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
@@ -114,40 +143,11 @@ step(1)
 poke(dut.io.ena,0)
 
 
-peek(dut.io.token)
+/*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
 peek(dut.io.token3)
-
-peek(dut.io.regstat_io.tag)
-peek(dut.io.regstat_io.valid)
-
- 
-poke(dut.io.RS_io(0).rtw,0)
-poke(dut.io.RS_io(1).rtw,1)
-poke(dut.io.RS_io(0).result_out,1)
-poke(dut.io.RS_io(1).result_out,2)
-poke(dut.io.RS_io(0).tag_out,0)
-poke(dut.io.RS_io(1).tag_out,1)
-
-
-peek(dut.io.RS_io(0).result_in)
-peek(dut.io.RS_io(1).result_in)
-peek(dut.io.RS_io(0).tag_in)
-peek(dut.io.RS_io(1).tag_in)
-
-
-peek(dut.io.RS_io(0).ack)
-peek(dut.io.RS_io(1).ack)
-
-step(1) 
-poke(dut.io.ena,0)
-
-
-peek(dut.io.token)
-peek(dut.io.token1)
-peek(dut.io.token2)
-peek(dut.io.token3)
+*/
 
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
@@ -177,10 +177,11 @@ step(1)
 poke(dut.io.ena,0)
 
 
-peek(dut.io.token)
+/*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
 peek(dut.io.token3)
+*/
 
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
@@ -208,10 +209,11 @@ step(1)
 poke(dut.io.ena,0)
 
 
-peek(dut.io.token)
+/*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
 peek(dut.io.token3)
+*/
 
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
@@ -238,10 +240,11 @@ step(1)
 poke(dut.io.ena,0)
 
 
-peek(dut.io.token)
+/*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
 peek(dut.io.token3)
+*/
 
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
@@ -269,10 +272,11 @@ step(1)
 poke(dut.io.ena,0)
 
 
-peek(dut.io.token)
+/*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
 peek(dut.io.token3)
+*/
 
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
