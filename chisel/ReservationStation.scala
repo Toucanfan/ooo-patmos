@@ -10,8 +10,8 @@ class ReservationStation(RS_id: Int) extends Module {
   val io = new ReservationStationIO()
   val rs_id = Bits(RS_id)
 
-  val st_idle :: st_ready :: st_wait :: st_execute :: st_rtw :: st_ack :: Nil = Enum(UInt(),6) 
- 
+  val st_idle :: st_ready :: st_wait :: st_execute :: st_rtw :: st_ack :: Nil = Enum(UInt(),6)
+
   val reg_st 	 = Reg(init = st_idle)
   val reg_val_rt = Reg(init = Bits(0, DATA_WIDTH))
   val reg_val_rs = Reg(init = Bits(0, DATA_WIDTH))
@@ -23,12 +23,12 @@ class ReservationStation(RS_id: Int) extends Module {
   io.CDB_io.result_out := reg_alu_res
   io.CDB_io.tag_out := rs_id
   val result_alu =  alu(io.issue_io.func,reg_val_rs, reg_val_rt)
-		
-  
-  switch (reg_st){
-	is(st_idle){ 
 
-		reg_st:=st_idle	
+
+  switch (reg_st){
+	is(st_idle){
+
+		reg_st:=st_idle
 		io.issue_io.busy := Bool(false)
 		when (io.ena){
 			reg_st := st_ready
@@ -61,7 +61,7 @@ class ReservationStation(RS_id: Int) extends Module {
 			reg_val_rs := io.CDB_io.result_in
 			reg_tag_rs := Bits(0)
 		}
-		when ((reg_tag_rs === io.CDB_io.tag_in)&& (reg_tag_rs> Bits(0))){ 
+		when ((reg_tag_rs === io.CDB_io.tag_in)&& (reg_tag_rs> Bits(0))){
 			reg_st:= st_wait
 			reg_val_rs := io.CDB_io.result_in
 			reg_tag_rs := Bits(0)
@@ -128,8 +128,8 @@ class ReservationStation(RS_id: Int) extends Module {
 }
 /*
 class rsTesterCase1(dut: ReservationStation) extends Tester(dut) {
-/*io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging*/
-/*Test 1: val_rs = 1 val_rt = 1 func = FUNC_ADD tag_rs = 0 tag_rt =0 */
+//io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging
+//Test 1: val_rs = 1 val_rt = 1 func = FUNC_ADD tag_rs = 0 tag_rt =0
   step(1)
   poke(dut.io.ena, (true) )
   poke(dut.io.issue_io.val_rs, 1)
@@ -159,14 +159,14 @@ class rsTesterCase1(dut: ReservationStation) extends Tester(dut) {
   expect(dut.io.CDB_io.result_out, 2)
   expect(dut.io.rs_state, 6)
   poke(dut.io.CDB_io.ack, (true))
-  step(1) 
+  step(1)
   expect(dut.io.rs_state, 1)
 
 }
 
 class rsTesterCase2(dut: ReservationStation) extends Tester(dut) {
-/*io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging*/
-/*Test 1: val_rs = - val_rt = - func = FUNC_ADD tag_rs = TAG:2 tag_rt = TAG:2 */
+//io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging
+//Test 1: val_rs = - val_rt = - func = FUNC_ADD tag_rs = TAG:2 tag_rt = TAG:2
   step(1)
   poke(dut.io.ena, (true) )
   poke(dut.io.issue_io.val_rs, 1)
@@ -196,11 +196,11 @@ class rsTesterCase2(dut: ReservationStation) extends Tester(dut) {
   expect(dut.io.rs_state, 3)
   step(1)
 
-  expect(dut.io.rs_value_rs,0)  
+  expect(dut.io.rs_value_rs,0)
   expect(dut.io.rs_value_rt,0)
   expect(dut.io.rs_state, 3)
 
-  step(1) //remain in wait state until tag_rt and tag_rs are received 
+  step(1) //remain in wait state until tag_rt and tag_rs are received
   poke(dut.io.CDB_io.result_in, 4)
   poke(dut.io.CDB_io.tag_in, 2)
   expect(dut.io.rs_state, 4)
@@ -209,7 +209,7 @@ class rsTesterCase2(dut: ReservationStation) extends Tester(dut) {
   expect(dut.io.rs_value_rt,0)
   step(1)
 
-  expect(dut.io.rs_value_rs,0)  
+  expect(dut.io.rs_value_rs,0)
   expect(dut.io.rs_value_rt,0)
   poke(dut.io.CDB_io.result_in, 4)
   poke(dut.io.CDB_io.tag_in, 2)
@@ -228,14 +228,14 @@ class rsTesterCase2(dut: ReservationStation) extends Tester(dut) {
   expect(dut.io.rs_state, 6)
   poke(dut.io.CDB_io.ack, (true))
 
-  step(1) 
+  step(1)
   expect(dut.io.rs_state, 1)
 
 }
 
 class rsTesterCase3(dut: ReservationStation) extends Tester(dut) {
-/*io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging*/
-/*Test 3: val_rs = - val_rt =5 func = FUNC_ADD tag_rs = TAG:2 tag_rt = 0 */
+//io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging
+//Test 3: val_rs = - val_rt =5 func = FUNC_ADD tag_rs = TAG:2 tag_rt = 0
   step(1)
   poke(dut.io.ena, (true) )
   poke(dut.io.issue_io.val_rs, 0)
@@ -247,44 +247,44 @@ class rsTesterCase3(dut: ReservationStation) extends Tester(dut) {
   poke(dut.io.issue_io.sel,1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 2)
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 3)
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 3)
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 3)
-  step(1) //remain in wait state until tag_rt and tag_rs are received 
+  step(1) //remain in wait state until tag_rt and tag_rs are received
   poke(dut.io.CDB_io.result_in, 4)
   poke(dut.io.CDB_io.tag_in, 2)
   expect(dut.io.rs_state, 4)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
 
@@ -292,7 +292,7 @@ class rsTesterCase3(dut: ReservationStation) extends Tester(dut) {
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.issue_io.busy, 0)
@@ -309,14 +309,14 @@ class rsTesterCase3(dut: ReservationStation) extends Tester(dut) {
   expect(dut.io.CDB_io.result_out, 5)
   expect(dut.io.rs_state, 6)
   poke(dut.io.CDB_io.ack, (true))
-  step(1) 
+  step(1)
   expect(dut.io.rs_state, 1)
 
 }
 
 class rsTesterCase4(dut: ReservationStation) extends Tester(dut) {
-/*io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging*/
-/*Test 3: val_rs = VAL val_rt =- func = FUNC_ADD tag_rs =0 tag_rt = TAG:2 */
+//io.rs_state :: io.rs_val_rs :: io.rs_val_rt used for debugging
+//Test 3: val_rs = VAL val_rt =- func = FUNC_ADD tag_rs =0 tag_rt = TAG:2
   step(1)
   poke(dut.io.ena, (true) )
   poke(dut.io.issue_io.val_rs, 1)
@@ -328,38 +328,38 @@ class rsTesterCase4(dut: ReservationStation) extends Tester(dut) {
   poke(dut.io.issue_io.sel,1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 2)
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 3)
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+T
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 3)
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.rs_state, 3)
-  step(1) //remain in wait state until tag_rt and tag_rs are received 
+  step(1) //remain in wait state until tag_rt and tag_rs are received
   poke(dut.io.CDB_io.result_in, 4)
   poke(dut.io.CDB_io.tag_in, 2)
   expect(dut.io.rs_state, 4)
@@ -372,7 +372,7 @@ class rsTesterCase4(dut: ReservationStation) extends Tester(dut) {
   step(1)
 
   expect(dut.io.rs_value_rs,0)
-  
+
   expect(dut.io.rs_value_rt,0)
 
   expect(dut.io.issue_io.busy, 0)
@@ -390,7 +390,7 @@ class rsTesterCase4(dut: ReservationStation) extends Tester(dut) {
   expect(dut.io.CDB_io.tag_out, 1)
   expect(dut.io.rs_state, 6)
   poke(dut.io.CDB_io.ack, (true))
-  step(1) 
+  step(1)
   expect(dut.io.rs_state, 1)
 
 }
@@ -414,5 +414,3 @@ object ReservationStationMain {
       () => Module(new ReservationStation(1)))
   }
 }
-
-

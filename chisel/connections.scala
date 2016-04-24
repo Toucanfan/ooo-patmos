@@ -47,8 +47,8 @@ class RSCDB() extends Bundle() {
   val valid = Bool(OUTPUT) //! /* Do we need this signal? */
   val result_in = Bits(OUTPUT, DATA_WIDTH) // from CDB
   val tag_in = Bits(OUTPUT, TAG_BITS)
-  val rtw = Bool(INPUT)
-  val ack = Bool(OUTPUT)
+  val rtw = Bool(INPUT) // comes from every RS
+  val ack = Bool(OUTPUT) //to every RS
   val result_out = Bits(INPUT, DATA_WIDTH) // from RS
   val tag_out = Bits(INPUT, TAG_BITS)
 }

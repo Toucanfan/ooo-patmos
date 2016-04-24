@@ -26,7 +26,6 @@ class Main() extends Module {
       val rs = Module(new ReservationStation(ids(i)))
       rs
    }
-   // val RS_io = Vec.fill(RS_NUM){ new IssueRS().flip() }
 
    for (i <- 0 until RS_NUM) {
 
@@ -41,7 +40,7 @@ class Main() extends Module {
       issue.io.RS_io(i).rs_id <> rStations(i).io.issue_io.rs_id
 
       /* reservation station to CDB */
-      rStations(i).io.CDB_io.valid <> cdb.io.RS_io(i).valid
+      cdb.io.RS_io(i) <> rStations(i).io.CDB_io
    }
 
    /* =================================================*/
@@ -82,11 +81,21 @@ class Main() extends Module {
 
    issue.io.RF_io.rt <> regFile.io.rfRead.rsAddr(1)
    issue.io.RF_io.val_rt <> regFile.io.rfRead.rsData(1)
+
+   /* =================================================*/
+   /*  connect CDB to register status unit*/
+   /* =================================================*/
+   cdb.io.regstat_io <> regStatus.io.CDB_io
+
+   /* =================================================*/
+   /*  connect CDB to register file unit*/
+   /* =================================================*/
+
 }
 class TestMain(dut: Main) extends Tester(dut) {
    poke(dut.io.ena,1)
    poke(dut.io.waddr,2)
-   poke(dut.io.wdata,10)
+   poke(dut.io.wdata,1)
    poke(dut.io.wvalid,1)
    poke(dut.io.rs,2)
 
@@ -107,19 +116,42 @@ class TestMain(dut: Main) extends Tester(dut) {
    step(1)
 
    /* From issue unit -> register file read rs value*/
-   expect(dut.issue.io.RF_io.rs,2)
+   //expect(dut.issue.io.regstat_io.RF_io.rs,2)
    expect(dut.regFile.io.rfRead.rsAddr(0),2)
-   expect(dut.issue.io.RF_io.val_rs,10)
+   //expect(dut.issue.io.regstat_io.RF_io.val_rs,10)
    expect(dut.regFile.io.rfRead.rsData(0),10)
    step(1)
 
 
    /* From issue unit -> register file read rt value*/
-   expect(dut.issue.io.RF_io.rt,4)
+   //expect(dut.issue.io.regstat_io.RF_io.rt,4)
    expect(dut.regFile.io.rfRead.rsAddr(1),4)
-   expect(dut.issue.io.RF_io.val_rt,0)
+   //expect(dut.issue.io.regstat_io.RF_io.val_rt,0)
    expect(dut.regFile.io.rfRead.rsData(1),0)
 
+   step(1)
+
+   /* From issue unit -> reservation stations */
+   expect(dut.issue.io.RS_io(0).val_rs, 1)
+   expect(dut.issue.io.RS_io(0).val_rt, 1)
+   expect(dut.issue.io.RS_io(0).tag_rt, 0)
+   expect(dut.issue.io.RS_io(0).tag_rs, 0)
+   expect(dut.issue.io.RS_io(0).func, 0)
+   expect(dut.issue.io.RS_io(0).sel,1)
+
+   step(1)
+
+   step(1)
+   expect(dut.cdb.io.RS_io(0).result_in, 2)
+   step(1)
+   expect(dut.cdb.io.RS_io(0).result_out, 2)
+   step(1)
+   expect(dut.cdb.io.RS_io(0).result_out, 2)
+   step(1)
+   expect(dut.cdb.io.RS_io(0).result_out, 2)
+   step(10) // wait for ack before writing to CDB
+   expect(dut.cdb.io.RS_io(0).result_out, 2)
+   //poke(dut.cdb.io.ack, (true))
    step(1)
 }
 
