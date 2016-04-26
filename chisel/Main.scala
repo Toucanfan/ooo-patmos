@@ -13,14 +13,13 @@ class Main() extends Module {
    /* =================================================*/
    val issue = Module(new Issue())
    val cdb = Module (new CDB() )
-   //val rStations = Module (new ReservationStation(RS_NUM))
    val regStatus = Module (new RegStatus())
    val regFile = Module(new RegisterFile())
    val regstat_io = new IssueRegStat().flip()
    //val LSQ = Module (new LoadStoreQ(RS_NUM+1))
 
    // reservation station setup
-   val ids = Seq(1,2,3,4)
+   val ids = Seq(0,1,2,3,4,5,6,7)
    val rStations = for (i <- 0 until RS_NUM) yield
    {
       val rs = Module(new ReservationStation(ids(i)))
@@ -38,6 +37,10 @@ class Main() extends Module {
       issue.io.RS_io(i).tag_rs <> rStations(i).io.issue_io.tag_rs
       issue.io.RS_io(i).tag_rt <> rStations(i).io.issue_io.tag_rt
       issue.io.RS_io(i).rs_id <> rStations(i).io.issue_io.rs_id
+      issue.io.RS_io(i).func <> rStations(i).io.issue_io.func
+      issue.io.RS_io(i).mem_op <> rStations(i).io.issue_io.mem_op
+      //issue.io.RS_io(i).busy <> rStations(i).io.issue_io.busy
+      issue.io.RS_io(i).sel <> rStations(i).io.issue_io.sel
 
       /* reservation station to CDB */
       cdb.io.RS_io(i) <> rStations(i).io.CDB_io
@@ -49,7 +52,6 @@ class Main() extends Module {
 
    issue.io.ena <> io.ena
    cdb.io.ena <> io.ena
-   //rStations.io.ena <> io.ena
    regStatus.io.ena <> io.ena
    regFile.io.ena <> io.ena
    //LSQ.io.ena <> io.ena
@@ -57,7 +59,6 @@ class Main() extends Module {
    issue.io.rs <> io.rs
    issue.io.rt <> io.rt
    issue.io.rd <> io.rd
-
 
    /* =================================================*/
    /*Data used just to TEST communication to be removed*/

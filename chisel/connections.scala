@@ -74,9 +74,6 @@ class Result() extends Bundle() {
   }
 }
 
-
-
-
 class CDBIO() extends Bundle() {
  /* This is ONE arbiter */
   val ena = Bool(INPUT)
