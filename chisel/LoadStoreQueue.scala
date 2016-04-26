@@ -37,12 +37,18 @@ class LoadStoreQ(tagstart: Int, length: Int) extends Module {
   val s_ready::s_waiting::s_busy::s_done::Nil = Enum(UInt(), 4)
 
   class QElem() extends Bundle {
-    val state = Reg(init = s_ready)
-    val mem_op = Reg(init = Bool(false))
-    val val_rs = Reg(init = Bits(0, width = DATA_WIDTH))
-    val val_ra = Reg(init = Bits(0, width = DATA_WIDTH))
-    val tag_rs = Reg(init = Bits(0, width = TAG_BITS))
-    val tag_ra = Reg(init = Bits(0, width = TAG_BITS))
+    val state = UInt(width = log2Up(4))
+    val mem_op = Bool()
+    val val_rs = Bits(width = DATA_WIDTH)
+    val val_ra = Bits(width = DATA_WIDTH)
+    val tag_rs = Bits(width = TAG_BITS)
+    val tag_ra = Bits(width = TAG_BITS)
+//    val state = Reg(init = s_ready)
+//    val mem_op = Reg(init = Bool(false))
+//    val val_rs = Reg(init = Bits(0, width = DATA_WIDTH))
+//    val val_ra = Reg(init = Bits(0, width = DATA_WIDTH))
+//    val tag_rs = Reg(init = Bits(0, width = TAG_BITS))
+//    val tag_ra = Reg(init = Bits(0, width = TAG_BITS))
 
     override def clone() = {
       val res = new QElem()
@@ -50,7 +56,15 @@ class LoadStoreQ(tagstart: Int, length: Int) extends Module {
     }
   }
 
-  val queue = Vec.fill(length) { new QElem() }
+  val qelem_init_state = new QElem()
+  qelem_init_state.state := s_ready
+  qelem_init_state.mem_op := Bool(false)
+  qelem_init_state.val_rs := Bits(0)
+  qelem_init_state.val_ra := Bits(0)
+  qelem_init_state.tag_rs := Bits(0)
+  qelem_init_state.tag_ra := Bits(0)
+  
+  val queue = Vec.fill(length) { Reg(init = qelem_init_state) }
 
   /* Add new element to FIFO if not full */
   when (io.issue_io.sel && !full) {
@@ -66,49 +80,53 @@ class LoadStoreQ(tagstart: Int, length: Int) extends Module {
 
   /* Make tag->value replacements for all FIFO elems */
   for (elem <- queue) {
+    val haveOneVal = Bool()
+    haveOneVal := ((elem.tag_rs === Bits(0)) || (elem.tag_ra === Bits(0)))
     when (elem.state === s_waiting) {
       when ((elem.tag_rs === io.CDB_io.tag_in) && io.CDB_io.valid) {
         elem.val_rs := io.CDB_io.result_in
         elem.tag_rs := Bits(0)
+        when (haveOneVal) {
+          elem.state := s_busy
+        }
       }
       when ((elem.tag_ra === io.CDB_io.tag_in) && io.CDB_io.valid) {
         elem.val_ra := io.CDB_io.result_in
         elem.tag_ra := Bits(0)
-      }
-      when ((elem.tag_rs === Bits(0)) && (elem.tag_ra === Bits(0))) {
-        elem.state := s_busy
+        when (haveOneVal) {
+          elem.state := s_busy
+        }
       }
     }
   }
     
   /* Do load/store for head of FIFO if not empty */
   val result = Reg(init = Bits(0, width = DATA_WIDTH))
+  val tag = Reg(init = Bits(0, width = TAG_BITS))
+  val rtw = Reg(init = Bool(false))
+  val wrBusy = Bool()
   io.CDB_io.result_out := result
-  io.CDB_io.rtw := Bool(false)
-  io.CDB_io.tag_out := UInt(tagstart, width = TAG_BITS) + head
-  io.testtrue := (queue(0).state === s_busy)
+  io.CDB_io.rtw := rtw // true if load op
+  io.CDB_io.tag_out := tag
+  wrBusy := (rtw && !io.CDB_io.ack)
 
-  //switch (queue(head).state) {
-    //is(s_busy) {
-    when (queue(0).state === s_busy) {
-      //when (!empty) {
-        /* Currently, just return dummy value */
-        result := Bits(1)
-        queue(0).state := s_done
-      //}
-    }.elsewhen (queue(0).state === s_done) {
-      /* Broadcast on CDB */
-    //is(s_done) {
-      //when (!empty) {
-        io.CDB_io.rtw := queue(0).mem_op // true if load op
-        when (io.CDB_io.ack) {
-          queue(0).state := s_ready
-          head := headNext
-          decNeeded := Bool(true)
-        }
-      //}
+  when (queue(head).state === s_busy) {
+    /* Currently, just return dummy value */
+    when (!wrBusy) {
+      result := Bits(1)
+      tag := UInt(tagstart) + head
+      rtw := queue(head).mem_op // true if load op
+      queue(head).state := s_ready
+      head := headNext
+      decNeeded := Bool(true)
     }
-  //}
+  } .otherwise {
+    when (!wrBusy) {
+      rtw := Bool(false)
+      tag := Bits(0)
+      result := Bits(0)
+    }
+  }
 
   when (incNeeded && !decNeeded) {
     fifoCount := fifoCount + UInt(1)
@@ -210,28 +228,46 @@ class LoadStoreQTest(dut: LoadStoreQ) extends Tester(dut) {
 
   step(1)
 
-  
+//  /* Wait for state transistion */
+//  poke(dut.io.CDB_io.valid, 0)
+//  expect(dut.io.CDB_io.rtw, 0)
+//  expect(dut.io.issue_io.busy, 1)
+//
+//  step(1)
+
+  /* Wait for elem 1 to execute */
   poke(dut.io.CDB_io.valid, 0)
   expect(dut.io.CDB_io.rtw, 0)
   expect(dut.io.issue_io.busy, 1)
 
   step(1)
 
+  /* Expect elem 1 is done and wants to write */
   expect(dut.io.CDB_io.rtw, 1)
   expect(dut.io.CDB_io.tag_out, 0)
   expect(dut.io.CDB_io.result_out, 1)
-  expect(dut.io.issue_io.busy, 1)
+  expect(dut.io.issue_io.busy, 0)
 
   step(1)
 
+  /* Tell elem 1 that its result has been written */
   poke(dut.io.CDB_io.ack, 1)
   expect(dut.io.CDB_io.rtw, 1)
   expect(dut.io.CDB_io.tag_out, 0)
   expect(dut.io.CDB_io.result_out, 1)
-  expect(dut.io.issue_io.busy, 1)
+  expect(dut.io.issue_io.busy, 0)
 
   step(1)
 
+  /* Wait for elem 2 to execute */
+  //poke(dut.io.CDB_io.valid, 0)
+  //expect(dut.io.CDB_io.rtw, 0)
+  //expect(dut.io.issue_io.busy, 0)
+
+  //step(1)
+
+  /* Expect elem 2 is done and wants to write
+   * Tell it has been written in the same cycle */
   poke(dut.io.CDB_io.ack, 1)
   expect(dut.io.CDB_io.rtw, 1)
   expect(dut.io.CDB_io.tag_out, 1)
@@ -240,6 +276,7 @@ class LoadStoreQTest(dut: LoadStoreQ) extends Tester(dut) {
 
   step(1)
 
+  /* Expect nobody wants to write */
   poke(dut.io.CDB_io.ack, 0)
   expect(dut.io.CDB_io.rtw, 0)
   expect(dut.io.issue_io.busy, 0)
