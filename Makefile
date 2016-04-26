@@ -34,3 +34,6 @@ modtest:
 
 modcomp:
 	$(SBT) "run-main $(MODULE) --cse --backend v --compile --vcd --targetDir $(HWBUILDDIR)"
+
+view:
+	gtkwave $(HWBUILDDIR)/$(MODULE).vcd $(HWBUILDDIR)/$(MODULE).gtkw
