@@ -103,9 +103,15 @@ class TestMain(dut: Main) extends Tester(dut) {
    poke(dut.io.rs, 5)
    poke(dut.io.rt, 5)
    poke(dut.io.rd, 1)
-
    poke(dut.io.useImm, 0)
    poke(dut.io.func, 0)
+
+   step(1)
+
+   poke(dut.io.rs, 3)
+   poke(dut.io.rt, 4)
+   poke(dut.io.rd, 2)
+   poke(dut.io.func, 1)
 
    step(10)
 

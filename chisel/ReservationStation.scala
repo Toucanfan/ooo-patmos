@@ -10,7 +10,7 @@ class ReservationStation(RS_id: Int) extends Module {
   val io = new ReservationStationIO()
   val rs_id = Bits(RS_id)
 
-  val st_idle :: st_ready :: st_wait :: st_rtw :: st_ack :: Nil = Enum(UInt(),5)
+  val st_idle :: st_ready :: st_wait :: st_ack :: Nil = Enum(UInt(),4)
 
   val reg_st   = Reg(init = st_idle)
   val reg_val_rt = Reg(init = Bits(0, DATA_WIDTH))
@@ -24,7 +24,7 @@ class ReservationStation(RS_id: Int) extends Module {
   io.CDB_io.tag_out := rs_id
   val result_alu =  alu(io.issue_io.func,reg_val_rs, reg_val_rt)
   io.issue_io.rs_id := rs_id
- 
+
  // io.rs_state := reg_st
 
  // io.rs_value_rs:= reg_val_rs
@@ -49,7 +49,7 @@ class ReservationStation(RS_id: Int) extends Module {
     reg_st := st_ready
 
     when (io.issue_io.sel){
-      io.issue_io.busy := Bool(true)
+      //io.issue_io.busy := Bool(true)
       reg_st := st_wait
     }
   }
@@ -60,6 +60,8 @@ class ReservationStation(RS_id: Int) extends Module {
     when ((reg_tag_rs === Bits(0)) && (reg_tag_rt === Bits(0))){
       reg_alu_res := result_alu
       io.CDB_io.rtw:= Bool(true)
+
+      io.CDB_io.result_out := reg_alu_res
       io.issue_io.busy:= Bool(true)
       reg_st := st_ack
     }
@@ -81,22 +83,17 @@ class ReservationStation(RS_id: Int) extends Module {
       reg_st:= st_wait
     }
   }
-  is(st_rtw){
-    io.issue_io.busy := Bool(true)
-    io.CDB_io.rtw := Bool(true)
-    io.CDB_io.result_out := reg_alu_res
-    io.CDB_io.tag_out := rs_id
-    reg_st:= st_ack
-  }
   is(st_ack){
     io.issue_io.busy := Bool(true)
-    reg_st:= st_rtw
+    reg_st:= st_ack
+
+    io.CDB_io.rtw:= Bool(true)
     when (io.CDB_io.ack){
       //now write
-      reg_st:=st_idle
+      reg_st:=st_ready
       io.CDB_io.tag_out := rs_id
       io.CDB_io.result_out := reg_alu_res
-      io.issue_io.busy := Bool(false)
+      //io.issue_io.busy := Bool(false)
     }
   }
   }

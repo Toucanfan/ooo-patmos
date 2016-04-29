@@ -18,7 +18,8 @@ class RegStatus() extends Module {
 
    // 32 register status, all initilized to 0
    // 4th bit indicates validity of tag
-   val reg_stat = Vec.fill(32) { Reg(init = Bits(0, width = TAG_BITS+1)) }
+   // val reg_stat = Vec.fill(32) { Reg(init = Bits(0, width = TAG_BITS+1)) }
+   val reg_stat = Vec.fill(32) { Reg(init = Bits(0, width = TAG_BITS)) }
 
    // default values for outputs
    issue_io.tag_rs := Bits(0)
@@ -33,17 +34,23 @@ class RegStatus() extends Module {
       issue_io.tag_rs := reg_stat(issue_io.rs)
       issue_io.tag_rt := reg_stat(issue_io.rt)
 
-      when (issue_io.valid) {
+      // when (issue_io.valid) {
          // adds valid bit in front of tag
-         reg_stat(UInt(issue_io.rd)) := Cat(Bits(1), issue_io.tag_rd)
-      }
+         // reg_stat(UInt(issue_io.rd)) := Cat(Bits(1), issue_io.tag_rd)
+            reg_stat(UInt(issue_io.rd)) := issue_io.tag_rd
+      // }
       when (io.CDB_io.valid) {
 
          switch(state) {
             is(st_read) {
 
                // adds valid bit in front of tag 1XXX
-               change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
+               // change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
+               // when (reg_stat.contains(tag_rs)) {
+                  change_addr := reg_stat.indexWhere((_: Bits) === tag_rs)
+               // }.otherwise {
+                  // change_addr := Bits(0)
+               // }
 
                // outputs address and enable line
                RF_io.rd_en := Bool(true)
