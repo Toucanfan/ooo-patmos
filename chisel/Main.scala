@@ -113,7 +113,7 @@ class TestMain(dut: Main) extends Tester(dut) {
    poke(dut.io.rd, 2)
    poke(dut.io.func, 1)
 
-   step(10)
+   step(30)
 
 }
 

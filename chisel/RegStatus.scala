@@ -45,12 +45,13 @@ class RegStatus() extends Module {
             is(st_read) {
 
                // adds valid bit in front of tag 1XXX
-               // change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
-               // when (reg_stat.contains(tag_rs)) {
+
+               when (reg_stat.contains(tag_rs)) {
+                  // change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
                   change_addr := reg_stat.indexWhere((_: Bits) === tag_rs)
-               // }.otherwise {
-                  // change_addr := Bits(0)
-               // }
+               }.otherwise {
+                  change_addr := Bits(0)
+               }
 
                // outputs address and enable line
                RF_io.rd_en := Bool(true)
