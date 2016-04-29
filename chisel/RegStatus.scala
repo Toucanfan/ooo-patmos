@@ -25,6 +25,7 @@ class RegStatus() extends Module {
    issue_io.tag_rt := Bits(0)
    RF_io.rd_en := Bool(false)
    RF_io.rd_addr := Bits(0)
+   RF_io.result := io.CDB_io.result
 
    when (io.ena) {
 
@@ -46,7 +47,11 @@ class RegStatus() extends Module {
 
                // outputs address and enable line
                RF_io.rd_en := Bool(true)
-               RF_io.rd_addr:= change_addr
+               RF_io.rd_addr := change_addr
+
+               // ADDED RESULT line
+               RF_io.result := io.CDB_io.result
+
                state := st_write
             }
             is(st_write) {
@@ -58,6 +63,7 @@ class RegStatus() extends Module {
          }
       }.otherwise {
          RF_io.rd_en := Bool(false)
+         RF_io.result := io.CDB_io.result
       }
    }
 }
