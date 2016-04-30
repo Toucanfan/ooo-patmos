@@ -41,6 +41,7 @@ class CDB() extends Module {
 
       io.regstat_io.tag:= reg_tag
       io.regstat_io.valid:= reg_valid
+      io.regstat_io.result:= reg_result
 
 
   for(i<-0 until RS_NUM-1){
@@ -82,6 +83,9 @@ peek(dut.io.token3)
 step(1)
 
 poke(dut.io.ena,0)
+
+poke(dut.io.RS_io(0).result_out,0)
+poke(dut.io.RS_io(1).result_out,0)
 /*peek(dut.io.token)
 peek(dut.io.token1)
 peek(dut.io.token2)
