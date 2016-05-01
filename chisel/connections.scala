@@ -158,3 +158,15 @@ class RegFileIO() extends Bundle() {
    val rfRead = new RegFileRead()
    val rfWrite = Vec.fill(PIPE_COUNT) { new Result().asInput }
 }
+
+class tomSelIO() extends Bundle(){
+   val ena = Bool(INPUT)
+   val instr = Bits(INPUT,INSTR_WIDTH)
+   val stopFetch = Bool(OUTPUT)
+   val busy = Bool(OUTPUT)
+   val switch = Bool(OUTPUT)
+   val transmit = Bool(OUTPUT)
+   val tWbDone = Bool(INPUT)
+   val tMemDone = Bool(INPUT)
+   val tExDone = Bool(INPUT)
+}
