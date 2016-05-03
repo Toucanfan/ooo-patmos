@@ -55,12 +55,18 @@ class Main() extends Module {
    issue.io.rt <> io.rt
    issue.io.rd <> io.rd
 
+
+   regStatus.io.RF_io(0) <> regFile.io.rfWrite(0)
    /* =================================================*/
    /*Data used just to TEST communication to be removed*/
    /* =================================================*/
-    regFile.io.rfWrite(0).addr <> io.waddr
-    regFile.io.rfWrite(0).data <> io.wdata
-    regFile.io.rfWrite(0).valid <> io.wvalid
+   regFile.io.rfWrite(0).addr := Bits(5)
+   regFile.io.rfWrite(0).data := Bits(5)
+   regFile.io.rfWrite(0).valid := Bool(true)
+   // regFile.io.rfWrite(0).addr <> io.waddr
+   // regFile.io.rfWrite(0).data <> io.wdata
+   // regFile.io.rfWrite(0).valid <> io.wvalid
+
    regFile.io.rfRead.rsAddr(0) := Bits(5)
    io.rdata:= regFile.io.rfRead.rsData(0)
 
@@ -85,9 +91,6 @@ class Main() extends Module {
    /*  connect CDB to register status unit*/
    /* =================================================*/
    cdb.io.regstat_io <> regStatus.io.CDB_io
-
-   // regStatus.io.RF_io <> regFile.io.rfWrite
-
 }
 class TestMain(dut: Main) extends Tester(dut) {
 

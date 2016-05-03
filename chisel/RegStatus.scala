@@ -62,9 +62,6 @@ class RegStatus() extends Module {
                   // RF_io.rd_en := Bool(true)
                   // RF_io.rd_addr := change_addr
 
-                  RF_io(0).addr := change_addr
-                  RF_io(0).valid := Bool(true)
-
                   // RF_io.rfWrite(0).addr := change_addr
                   // RF_io.rfWrite(0).valid := Bool(true)
 
@@ -77,6 +74,11 @@ class RegStatus() extends Module {
                // resets tag to 0000
                reg_stat(change_addr):= Bits(0)
                state := st_read
+
+               when (change_addr != Bits(31)) {
+               // RF_io(0).addr := change_addr
+               RF_io(0).valid := Bool(true)
+            }
             }
          }
       }.otherwise {
