@@ -24,9 +24,12 @@ class RegStatus() extends Module {
    // default values for outputs
    issue_io.tag_rs := Bits(0)
    issue_io.tag_rt := Bits(0)
-   RF_io.rd_en := Bool(false)
-   RF_io.rd_addr := Bits(0)
-   RF_io.result := io.CDB_io.result
+
+   // RF_io.rd_en := Bool(false)
+   // RF_io.rd_addr := Bits(0)
+   RF_io(0).addr := Bits(0)
+   RF_io(0).data := io.CDB_io.result
+   RF_io(0).valid := Bool(false)
 
    when (io.ena) {
 
@@ -35,32 +38,39 @@ class RegStatus() extends Module {
       issue_io.tag_rt := reg_stat(issue_io.rt)
 
       // when (issue_io.valid) {
-         // adds valid bit in front of tag
-         // reg_stat(UInt(issue_io.rd)) := Cat(Bits(1), issue_io.tag_rd)
-            reg_stat(UInt(issue_io.rd)) := issue_io.tag_rd
+      // reg_stat(UInt(issue_io.rd)) := Cat(Bits(1), issue_io.tag_rd)
+      reg_stat(UInt(issue_io.rd)) := issue_io.tag_rd
       // }
+
+      // RIGHT NOW TAG CANNOT BE 0
       when (io.CDB_io.valid) {
+         // when (io.CDB_io.valid & tag_rs != Bits(0)) {
 
          switch(state) {
             is(st_read) {
 
                // adds valid bit in front of tag 1XXX
 
-               when (reg_stat.contains(tag_rs)) {
-                  // change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
-                  change_addr := reg_stat.indexWhere((_: Bits) === tag_rs)
-               }.otherwise {
-                  change_addr := Bits(0)
+               // when (reg_stat.contains(Cat(Bits(1),tag_rs))) {
+               change_addr := reg_stat.indexWhere((_: Bits) === tag_rs)
+               // change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
+
+               // RIGHT NOW REG_31 CANNOT BE USED
+               when (change_addr != Bits(31)) {
+
+                  // outputs address and enable line
+                  // RF_io.rd_en := Bool(true)
+                  // RF_io.rd_addr := change_addr
+
+                  RF_io(0).addr := change_addr
+                  RF_io(0).valid := Bool(true)
+
+                  // RF_io.rfWrite(0).addr := change_addr
+                  // RF_io.rfWrite(0).valid := Bool(true)
+
+                  state := st_write
                }
 
-               // outputs address and enable line
-               RF_io.rd_en := Bool(true)
-               RF_io.rd_addr := change_addr
-
-               // ADDED RESULT line
-               RF_io.result := io.CDB_io.result
-
-               state := st_write
             }
             is(st_write) {
 
@@ -70,15 +80,15 @@ class RegStatus() extends Module {
             }
          }
       }.otherwise {
-         RF_io.rd_en := Bool(false)
-         RF_io.result := io.CDB_io.result
+
+         RF_io(0).valid := Bool(false)
       }
    }
 }
 
 class RSTest(d: RegStatus) extends Tester(d) {
 
-   poke(d.io.ena, (true))
+   /*poke(d.io.ena, (true))
    step(1)
 
    // reg3 initial value
@@ -114,7 +124,7 @@ class RSTest(d: RegStatus) extends Tester(d) {
    expect(d.io.issue_io.tag_rs, 0)
    step(1)
    poke(d.io.CDB_io.valid, (false))
-   step(1)
+   step(1)*/
 }
 
 object RSTest {

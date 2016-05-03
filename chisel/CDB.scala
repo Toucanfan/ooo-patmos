@@ -35,7 +35,7 @@ class CDB() extends Module {
   /*Logic to give ACK to only one unit*/
   /* And update common data bus result/tag*/
   //* When a unit request to write the next
-  /* Clock cycle from the time the request 
+  /* Clock cycle from the time the request
       is accepted then it can write*/
   //===========================================
 
@@ -95,7 +95,7 @@ peek(dut.io.token3)
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
 
- 
+
 poke(dut.io.RS_io(0).rtw,0)
 poke(dut.io.RS_io(1).rtw,1)
 poke(dut.io.RS_io(0).result_out,1)
@@ -113,7 +113,7 @@ peek(dut.io.RS_io(1).tag_in)
 peek(dut.io.RS_io(0).ack)
 peek(dut.io.RS_io(1).ack)
 
-step(1) 
+step(1)
 poke(dut.io.ena,0)
 
 /*peek(dut.io.token)
@@ -125,7 +125,7 @@ peek(dut.io.token3)
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
 
- 
+
 poke(dut.io.RS_io(0).rtw,0)
 poke(dut.io.RS_io(1).rtw,1)
 poke(dut.io.RS_io(0).result_out,1)
@@ -143,7 +143,7 @@ peek(dut.io.RS_io(1).tag_in)
 peek(dut.io.RS_io(0).ack)
 peek(dut.io.RS_io(1).ack)
 
-step(1) 
+step(1)
 poke(dut.io.ena,0)
 
 
@@ -156,7 +156,7 @@ peek(dut.io.token3)
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
 
- 
+
 poke(dut.io.RS_io(0).rtw,1)
 poke(dut.io.RS_io(1).rtw,0)
 poke(dut.io.RS_io(0).result_out,1)
@@ -176,7 +176,7 @@ peek(dut.io.RS_io(1).ack)
 
 
 
-step(1) 
+step(1)
 
 poke(dut.io.ena,0)
 
@@ -190,7 +190,7 @@ peek(dut.io.token3)
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
 
- 
+
 poke(dut.io.RS_io(0).rtw,1)
 poke(dut.io.RS_io(1).rtw,0)
 poke(dut.io.RS_io(0).result_out,1)
@@ -208,7 +208,7 @@ peek(dut.io.RS_io(1).tag_in)
 peek(dut.io.RS_io(0).ack)
 peek(dut.io.RS_io(1).ack)
 
-step(1) 
+step(1)
 
 poke(dut.io.ena,0)
 
@@ -222,7 +222,7 @@ peek(dut.io.token3)
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
 
- 
+
 poke(dut.io.RS_io(0).rtw,1)
 poke(dut.io.RS_io(1).rtw,0)
 poke(dut.io.RS_io(0).result_out,1)
@@ -253,7 +253,7 @@ peek(dut.io.token3)
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
 
- 
+
 poke(dut.io.RS_io(0).rtw,0)
 poke(dut.io.RS_io(1).rtw,0)
 poke(dut.io.RS_io(0).result_out,1)
@@ -285,7 +285,7 @@ peek(dut.io.token3)
 peek(dut.io.regstat_io.tag)
 peek(dut.io.regstat_io.valid)
 
- 
+
 poke(dut.io.RS_io(0).rtw,0)
 poke(dut.io.RS_io(1).rtw,0)
 poke(dut.io.RS_io(0).result_out,1)
@@ -314,4 +314,3 @@ object cdbTester {
       }
   }
 }
-

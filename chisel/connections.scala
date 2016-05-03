@@ -92,7 +92,8 @@ class CDBIO() extends Bundle() {
 class RegStatusIO() extends Bundle() {
    val ena = Bool(INPUT)
    val issue_io = new IssueRegStat()
-   val RF_io = new RegStatRF().flip()
+   //val RF_io = new RegStatRF().flip()
+   val RF_io = Vec.fill(PIPE_COUNT) { new Result().asOutput }
    val CDB_io = new CDBRegStat()
 
    // FOR debugging

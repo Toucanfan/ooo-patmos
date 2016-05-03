@@ -58,9 +58,9 @@ class Main() extends Module {
    /* =================================================*/
    /*Data used just to TEST communication to be removed*/
    /* =================================================*/
-   regFile.io.rfWrite(0).addr <> io.waddr
-   regFile.io.rfWrite(0).data <> io.wdata
-   regFile.io.rfWrite(0).valid <> io.wvalid
+    regFile.io.rfWrite(0).addr <> io.waddr
+    regFile.io.rfWrite(0).data <> io.wdata
+    regFile.io.rfWrite(0).valid <> io.wvalid
    regFile.io.rfRead.rsAddr(0) := Bits(5)
    io.rdata:= regFile.io.rfRead.rsData(0)
 
@@ -86,6 +86,8 @@ class Main() extends Module {
    /* =================================================*/
    cdb.io.regstat_io <> regStatus.io.CDB_io
 
+   // regStatus.io.RF_io <> regFile.io.rfWrite
+
 }
 class TestMain(dut: Main) extends Tester(dut) {
 
@@ -105,14 +107,17 @@ class TestMain(dut: Main) extends Tester(dut) {
    poke(dut.io.rd, 1)
    poke(dut.io.useImm, 0)
    poke(dut.io.func, 0)
-
    step(1)
 
    poke(dut.io.rs, 3)
    poke(dut.io.rt, 4)
    poke(dut.io.rd, 2)
    poke(dut.io.func, 1)
+   step(8)
 
+   poke(dut.io.rs, 0)
+   poke(dut.io.rt, 0)
+   poke(dut.io.rd, 0)
    step(30)
 
 }
