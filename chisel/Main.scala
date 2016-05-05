@@ -20,10 +20,9 @@ class Main() extends Module {
    //val LSQ = Module (new LoadStoreQ(RS_NUM+1))
 
    // reservation station setup
-   val ids = Seq(0,1,2,3,4,5,6,7)
    val rStations = for (i <- 0 until RS_NUM) yield
    {
-      val rs = Module(new ReservationStation(ids(i)))
+      val rs = Module(new ReservationStation(i+1))
       //val rs = Module(new ReservationStation(i))
       rs
    }
@@ -40,6 +39,11 @@ class Main() extends Module {
       cdb.io.RS_io(i) <> rStations(i).io.CDB_io
       //rStations(i).io.CDB_io <> cdb.io.RS_io(i)
    }
+
+   val lsqueue = Module(new LoadStoreQ(RS_NUM+1, LSQUEUE_NELEMS))
+   lsqueue.io.ena <> io.ena
+   lsqueue.io.issue_io <> issue.io.LSQ_io
+   lsqueue.io.CDB_io <> cdb.io.LSQ_io
 
    /* =================================================*/
    /* Enable all the units*/

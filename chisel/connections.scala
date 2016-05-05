@@ -38,6 +38,7 @@ class IssueRS() extends Bundle() {
    val tag_rt = Bits(INPUT, TAG_BITS)
    val func = Bits(INPUT, FUNC_WIDTH)
    val mem_op = Bool(INPUT) // 0: Store, 1: Load
+   val mem_siz = Bits(INPUT, width = 2)
    val rs_id = Bits(OUTPUT, TAG_BITS)
 
    val busy = Bool(OUTPUT)
@@ -80,8 +81,9 @@ class CDBIO() extends Bundle() {
    /* This is ONE arbiter */
    val ena = Bool(INPUT)
    //val RS_io = new RSCDB()
-   val RS_io = Vec.fill(RS_NUM) { new RSCDB() }
+   val RS_io = Vec.fill(RS_NUM+1) { new RSCDB() }
    val regstat_io = new CDBRegStat().flip()
+   val LSQ_io = new RSCDB()
    //val token = Bits(OUTPUT,1)
    //val token1 = Bits(OUTPUT,1)
    //val token2 = Bits(OUTPUT,1)
@@ -114,14 +116,21 @@ class ReservationStationIO() extends Bundle() {
 
 class IssueIO() extends Bundle() {
    val ena = Bool(INPUT)
+   val busy = Bool(OUTPUT)
+
    val rs = Bits(INPUT, REG_BITS)
    val rt = Bits(INPUT, REG_BITS)
    val rd = Bits(INPUT, REG_BITS)
-   val useImm = Bool(INPUT)
    val imm = Bits(INPUT, DATA_WIDTH)
+
+   val itype = Bool(INPUT) // 0: ALU, 1: MEM
+   val useImm = Bool(INPUT)
    val func = Bits(INPUT, FUNC_WIDTH)
-   val busy = Bool(OUTPUT)
+   val mem_op = Bool(INPUT) // 0: STORE, 1: LOAD
+   val mem_siz = Bits(INPUT, width = 2)
+
    val RS_io = Vec.fill(RS_NUM){ new IssueRS().flip() }
+   val LSQ_io = new IssueRS().flip()
    val regstat_io = new IssueRegStat().flip()
    val RF_io = new IssueRF().flip()
 }
@@ -140,14 +149,20 @@ class LoadStoreQIO() extends ReservationStationIO() {
 
 class MainIO() extends Bundle() {
    val ena = Bool(INPUT)
+   val busy = Bool(OUTPUT)
+
    val rs = Bits(INPUT, REG_BITS)
    val rt = Bits(INPUT, REG_BITS)
    val rd = Bits(INPUT, REG_BITS)
-   val useImm = Bool(INPUT)
-   val sel = Bool(INPUT)
    val imm = Bits(INPUT, DATA_WIDTH)
+
+   val itype = Bool(INPUT) // 0: ALU, 1: MEM
+   val useImm = Bool(INPUT)
    val func = Bits(INPUT, FUNC_WIDTH)
-   val busy = Bool(OUTPUT)
+   val mem_op = Bool(INPUT) // 0: STORE, 1: LOAD
+   val mem_siz = Bits(INPUT, width = 2)
+
+   /* ok, write is from perspective of register file */
    val wdata = Bits(INPUT, DATA_WIDTH)
    val waddr = Bits(INPUT, REG_BITS)
    val wvalid = Bool(INPUT)
