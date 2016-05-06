@@ -16,17 +16,21 @@ class CDB() extends Module {
   //===========================================
   /* Logic which implements a SHIFT REGISTER*/
   //===========================================
-  val dff =  Vec.fill(RS_NUM) { Reg(init= Bits(0,1))}
+ /* val dff =  Vec.fill(RS_NUM+1) { Reg(init= Bits(0,1))}
 
   when (io.ena){
     dff(0):=Bits(1)
   }.otherwise{
-    dff(0):= dff(RS_NUM-1)
+    dff(0):= dff(RS_NUM)
   }
 
-  for(i<- 0 until RS_NUM-1){
+  for(i<- 0 until RS_NUM){
     dff(i+1) := dff(i)
-  }
+  }*/
+
+  val dff = Reg(init = Bits(1,RS_NUM+1))
+  dff := Cat(dff(RS_NUM -1 , 0), dff(RS_NUM))
+
   //===========================================
 
 
@@ -38,18 +42,18 @@ class CDB() extends Module {
   /* Clock cycle from the time the request
       is accepted then it can write*/
   //===========================================
+// check ring first
 
       io.regstat_io.tag:= reg_tag
       io.regstat_io.valid:= reg_valid
       io.regstat_io.result:= reg_result
 
-
-  for(i<-0 until RS_NUM){
+  for(i<-0 until RS_NUM+1){
     io.RS_io(i).result_in:= reg_result
     io.RS_io(i).tag_in:= reg_tag
 
 
-    when ((io.RS_io(i).rtw) && (dff(i) === Bits(1))){
+    when ((io.RS_io(i).rtw === Bits(1)) && (dff(i) === Bits(1))){
       io.RS_io(i).ack:= Bits(1)
       reg_result := io.RS_io(i).result_out
       reg_tag := io.RS_io(i).tag_out
@@ -59,6 +63,16 @@ class CDB() extends Module {
       io.RS_io(i).result_in:= reg_result
       io.RS_io(i).tag_in:= reg_tag
     }
+    when  (io.LSQ_io.rtw && (dff(RS_NUM) === Bits(1))){
+      io.LSQ_io.ack:=Bits(1)
+      reg_result:= io.LSQ_io.result_out
+      reg_tag:= io.LSQ_io.tag_out
+    }.otherwise{
+      io.LSQ_io.ack:= Bits(0)
+      io.LSQ_io.result_in:= reg_result
+      io.LSQ_io.tag_in:= reg_tag
+    }
+
   }
 
   reg_valid := io.RS_io.exists((_: RSCDB).rtw)
@@ -70,6 +84,7 @@ class CDB() extends Module {
 //io.token1 := dff(1)
 //io.token2 := dff(2)
 //io.token3 := dff(3)
+//io.token4 := dff(4)
 }
 
 
