@@ -47,6 +47,7 @@ class CDB() extends Module {
       io.regstat_io.tag:= reg_tag
       io.regstat_io.valid:= reg_valid
       io.regstat_io.result:= reg_result
+    reg_valid := Bits(0)
 
   for(i<-0 until RS_NUM+1){
     io.RS_io(i).result_in:= reg_result
@@ -57,7 +58,7 @@ class CDB() extends Module {
       io.RS_io(i).ack:= Bits(1)
       reg_result := io.RS_io(i).result_out
       reg_tag := io.RS_io(i).tag_out
-    //  reg_valid := Bits(1)
+      reg_valid := Bits(1)
     }.otherwise{
       io.RS_io(i).ack:= Bits(0)
       io.RS_io(i).result_in:= reg_result
@@ -67,6 +68,7 @@ class CDB() extends Module {
       io.LSQ_io.ack:=Bits(1)
       reg_result:= io.LSQ_io.result_out
       reg_tag:= io.LSQ_io.tag_out
+      reg_valid := Bits(1)
     }.otherwise{
       io.LSQ_io.ack:= Bits(0)
       io.LSQ_io.result_in:= reg_result
@@ -75,7 +77,7 @@ class CDB() extends Module {
 
   }
 
-  reg_valid := io.RS_io.exists((_: RSCDB).rtw)
+  //reg_valid := io.RS_io.exists((_: RSCDB).rtw)
 
 
   //===========================================

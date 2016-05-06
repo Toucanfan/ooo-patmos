@@ -27,7 +27,7 @@ class IssueRF() extends Bundle() {
 
 class RegStatRF() extends Bundle() {
    val rd_en = Bool(INPUT)
-   val rd_addr = Bits(INPUT, REG_BITS)
+   val rd_addr = Bits(INPUT, REG_COUNT)
    val result = Bits(INPUT, DATA_WIDTH)
 }
 
@@ -95,7 +95,7 @@ class RegStatusIO() extends Bundle() {
    val ena = Bool(INPUT)
    val issue_io = new IssueRegStat()
    //val RF_io = new RegStatRF().flip()
-   val RF_io = Vec.fill(PIPE_COUNT) { new Result().asOutput }
+   val RF_io = new RegStatRF().flip()
    val CDB_io = new CDBRegStat()
 
    // FOR debugging
@@ -167,6 +167,12 @@ class RegFileIO() extends Bundle() {
    val ena = Bool(INPUT)
    val rfRead = new RegFileRead()
    val rfWrite = Vec.fill(PIPE_COUNT) { new Result().asInput }
+}
+
+class NewRegFileIO() extends Bundle() {
+  val ena = Bool(INPUT)
+  val issue_io = new IssueRF()
+  val regstat_io = new RegStatRF()
 }
 
 class tomSelIO() extends Bundle(){

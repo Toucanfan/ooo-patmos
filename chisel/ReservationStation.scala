@@ -18,11 +18,12 @@ class ReservationStation(RS_id: Int) extends Module {
   val reg_tag_rt = Reg(init = Bits(0, RS_NUM))
   val reg_tag_rs = Reg(init = Bits(0, RS_NUM))
   val reg_alu_res= Reg(init = Bits(0, DATA_WIDTH))
+  val reg_func = Reg(init = Bits(0, FUNC_WIDTH))
   io.issue_io.busy := Bool(false)
   io.CDB_io.rtw := Bool(false)
   io.CDB_io.result_out := reg_alu_res
   io.CDB_io.tag_out := rs_id
-  val result_alu =  alu(io.issue_io.func,reg_val_rs, reg_val_rt)
+  val result_alu =  alu(reg_func, reg_val_rs, reg_val_rt)
   io.issue_io.rs_id := rs_id
 
  // io.rs_state := reg_st
@@ -41,28 +42,29 @@ class ReservationStation(RS_id: Int) extends Module {
   //  }
   //}
   is(st_ready)   {
+    io.CDB_io.rtw := Bool(false)
     io.issue_io.busy := Bool(false)
-    reg_val_rs := io.issue_io.val_rs
-    reg_val_rt := io.issue_io.val_rt
-    reg_tag_rt := io.issue_io.tag_rt
-    reg_tag_rs := io.issue_io.tag_rs
-    reg_st := st_ready
+    //reg_st := st_ready
 
     when (io.issue_io.sel){
-      //io.issue_io.busy := Bool(true)
+      reg_val_rs := io.issue_io.val_rs
+      reg_val_rt := io.issue_io.val_rt
+      reg_tag_rt := io.issue_io.tag_rt
+      reg_tag_rs := io.issue_io.tag_rs
+      reg_func := io.issue_io.func
       reg_st := st_wait
     }
   }
   is(st_wait) {
     io.issue_io.busy := Bool(true)
-    reg_st :=st_wait
+    //reg_st :=st_wait
 
     when ((reg_tag_rs === Bits(0)) && (reg_tag_rt === Bits(0))){
       reg_alu_res := result_alu
-      io.CDB_io.rtw:= Bool(true)
+      //io.CDB_io.rtw:= Bool(true)
 
-      io.CDB_io.result_out := reg_alu_res
-      io.issue_io.busy:= Bool(true)
+      //io.CDB_io.result_out := reg_alu_res
+      //io.issue_io.busy:= Bool(true)
       reg_st := st_ack
     }
     when ((reg_tag_rs === io.CDB_io.tag_in) && (reg_tag_rt === io.CDB_io.tag_in)){
@@ -70,29 +72,29 @@ class ReservationStation(RS_id: Int) extends Module {
       reg_tag_rt := Bits(0)
       reg_val_rs := io.CDB_io.result_in
       reg_tag_rs := Bits(0)
-      reg_st:= st_wait
+      //reg_st:= st_wait
     }
     when ((reg_tag_rs === io.CDB_io.tag_in) && (reg_tag_rs> Bits(0))){
-      reg_st:= st_wait
+      //reg_st:= st_wait
       reg_val_rs := io.CDB_io.result_in
       reg_tag_rs := Bits(0)
     }
     when((reg_tag_rt === io.CDB_io.tag_in)&& (reg_tag_rt> Bits(0))){
       reg_val_rt := io.CDB_io.result_in
       reg_tag_rt := Bits(0)
-      reg_st:= st_wait
+      //reg_st:= st_wait
     }
   }
   is(st_ack){
     io.issue_io.busy := Bool(true)
-    reg_st:= st_ack
+    //reg_st:= st_ack
 
     io.CDB_io.rtw:= Bool(true)
+    io.CDB_io.tag_out := rs_id
+    io.CDB_io.result_out := reg_alu_res
     when (io.CDB_io.ack){
       //now write
       reg_st:=st_ready
-      io.CDB_io.tag_out := rs_id
-      io.CDB_io.result_out := reg_alu_res
       //io.issue_io.busy := Bool(false)
     }
   }

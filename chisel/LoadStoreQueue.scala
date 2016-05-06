@@ -81,8 +81,13 @@ class LoadStoreQ(tagstart: Int, length: Int) extends Module {
   /* Make tag->value replacements for all FIFO elems */
   for (elem <- queue) {
     val haveOneVal = Bool()
+    val haveBothVals = Bool()
     haveOneVal := ((elem.tag_rs === Bits(0)) || (elem.tag_ra === Bits(0)))
+    haveBothVals := ((elem.tag_rs === Bits(0)) && (elem.tag_ra === Bits(0)))
     when (elem.state === s_waiting) {
+      when (haveBothVals) {
+        elem.state := s_busy
+      }
       when ((elem.tag_rs === io.CDB_io.tag_in) && io.CDB_io.valid) {
         elem.val_rs := io.CDB_io.result_in
         elem.tag_rs := Bits(0)

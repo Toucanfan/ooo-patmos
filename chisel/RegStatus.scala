@@ -9,82 +9,42 @@ class RegStatus() extends Module {
 
    // io variables
    val io = new RegStatusIO()
-   val issue_io = io.issue_io
-   val RF_io = io.RF_io
-   val tag_rs = io.CDB_io.tag // Bits
-   val change_addr = Reg(init = UInt(0))
-   val st_read :: st_write :: Nil = Enum(UInt(),2)
-   val state = Reg(init=st_read)
-
-   // 32 register status, all initilized to 0
-   // 4th bit indicates validity of tag
-   // val reg_stat = Vec.fill(32) { Reg(init = Bits(0, width = TAG_BITS+1)) }
    val reg_stat = Vec.fill(32) { Reg(init = Bits(0, width = TAG_BITS)) }
-
-   // default values for outputs
-   issue_io.tag_rs := Bits(0)
-   issue_io.tag_rt := Bits(0)
 
    // RF_io.rd_en := Bool(false)
    // RF_io.rd_addr := Bits(0)
-   RF_io(0).addr := Bits(0)
-   RF_io(0).data := io.CDB_io.result
-   RF_io(0).valid := Bool(false)
+   io.RF_io.rd_addr := Bits(0)
+   io.RF_io.result := io.CDB_io.result
+   io.RF_io.rd_en := Bool(false)
 
-   when (io.ena) {
+   // tag retreival
+   io.issue_io.tag_rs := reg_stat(io.issue_io.rs)
+   io.issue_io.tag_rt := reg_stat(io.issue_io.rt)
 
-      // tag retreival
-      issue_io.tag_rs := reg_stat(issue_io.rs)
-      issue_io.tag_rt := reg_stat(issue_io.rt)
+   // tag insertion
+   reg_stat(UInt(io.issue_io.rd)) := io.issue_io.tag_rd
 
       // when (issue_io.valid) {
       // reg_stat(UInt(issue_io.rd)) := Cat(Bits(1), issue_io.tag_rd)
-      reg_stat(UInt(issue_io.rd)) := issue_io.tag_rd
       // }
 
       // RIGHT NOW TAG CANNOT BE 0
-      when (io.CDB_io.valid) {
-         // when (io.CDB_io.valid & tag_rs != Bits(0)) {
+   when (io.CDB_io.valid) {
+     io.RF_io.rd_en := Bool(true)
+     io.RF_io.result := io.CDB_io.result
 
-         switch(state) {
-            is(st_read) {
-
-               // adds valid bit in front of tag 1XXX
-
-               // when (reg_stat.contains(Cat(Bits(1),tag_rs))) {
-               change_addr := reg_stat.indexWhere((_: Bits) === tag_rs)
-               // change_addr := reg_stat.indexWhere((_: Bits) === Cat(Bits(1),tag_rs))
-
-               // RIGHT NOW REG_31 CANNOT BE USED
-               when (change_addr != Bits(31)) {
-
-                  // outputs address and enable line
-                  // RF_io.rd_en := Bool(true)
-                  // RF_io.rd_addr := change_addr
-
-                  // RF_io.rfWrite(0).addr := change_addr
-                  // RF_io.rfWrite(0).valid := Bool(true)
-
-                  state := st_write
-               }
-
-            }
-            is(st_write) {
-
-               // resets tag to 0000
-               reg_stat(change_addr):= Bits(0)
-               state := st_read
-
-               when (change_addr != Bits(31)) {
-               // RF_io(0).addr := change_addr
-               RF_io(0).valid := Bool(true)
-            }
-            }
+     for (i <- 0 until REG_COUNT) {
+       when (reg_stat(i) === io.CDB_io.tag) {
+         io.RF_io.rd_addr(i) := Bits(1)
+         reg_stat(i) := Bits(0)
+         when (UInt(io.issue_io.rs) === UInt(i)) {
+           io.issue_io.tag_rs := Bits(0)
          }
-      }.otherwise {
-
-         RF_io(0).valid := Bool(false)
-      }
+         when (UInt(io.issue_io.rt) === UInt(i)) {
+           io.issue_io.tag_rt := Bits(0)
+         }
+       }
+     }
    }
 }
 
