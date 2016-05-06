@@ -16,14 +16,11 @@ class Main() extends Module {
    val cdb = Module (new CDB() )
    val regStatus = Module (new RegStatus())
    val regFile = Module(new RegisterFile())
-   val regstat_io = new IssueRegStat().flip()
-   //val LSQ = Module (new LoadStoreQ(RS_NUM+1))
 
    // reservation station setup
    val rStations = for (i <- 0 until RS_NUM) yield
    {
       val rs = Module(new ReservationStation(i+1))
-      //val rs = Module(new ReservationStation(i))
       rs
    }
 
@@ -53,26 +50,10 @@ class Main() extends Module {
    cdb.io.ena <> io.ena
    regStatus.io.ena <> io.ena
    regFile.io.ena <> io.ena
-   //LSQ.io.ena <> io.ena
 
    issue.io.rs <> io.rs
    issue.io.rt <> io.rt
    issue.io.rd <> io.rd
-
-
-   regStatus.io.RF_io(0) <> regFile.io.rfWrite(0)
-   /* =================================================*/
-   /*Data used just to TEST communication to be removed*/
-   /* =================================================*/
-   regFile.io.rfWrite(0).addr := Bits(5)
-   regFile.io.rfWrite(0).data := Bits(5)
-   regFile.io.rfWrite(0).valid := Bool(true)
-   // regFile.io.rfWrite(0).addr <> io.waddr
-   // regFile.io.rfWrite(0).data <> io.wdata
-   // regFile.io.rfWrite(0).valid <> io.wvalid
-
-   regFile.io.rfRead.rsAddr(0) := Bits(5)
-   io.rdata:= regFile.io.rfRead.rsData(0)
 
    /* =================================================*/
    /*  connect issue unit to register status unit*/
@@ -80,16 +61,20 @@ class Main() extends Module {
    issue.io.regstat_io <> regStatus.io.issue_io
 
    /* =================================================*/
-   /*  connect issue unit to register file unit*/
+   /*  connect register file unit*/
    /* =================================================*/
 
-   regFile.io.rfRead.rsAddr(0):=issue.io.RF_io.rs
-   // issue.io.RF_io.rs <> regFile.io.rfRead.rsAddr(0)
-   issue.io.RF_io.val_rs <> regFile.io.rfRead.rsData(0)
+   /* connect to issue unit */
+   regFile.io.rfRead.rsAddr(0) := issue.io.RF_io.rs
+   issue.io.RF_io.val_rs := regFile.io.rfRead.rsData(0)
 
-   regFile.io.rfRead.rsAddr(1):=issue.io.RF_io.rt
-   // issue.io.RF_io.rt <> regFile.io.rfRead.rsAddr(2)
-   issue.io.RF_io.val_rt <> regFile.io.rfRead.rsData(1)
+   regFile.io.rfRead.rsAddr(1) := issue.io.RF_io.rt
+   issue.io.RF_io.val_rt := regFile.io.rfRead.rsData(1)
+
+   /* connect to register status */
+   regFile.io.rfWrite(0).valid := regStatus.io.RF_io.rd_en
+   regFile.io.rfWrite(0).addr := regStatus.io.RF_io.rd_addr
+   regFile.io.rfWrite(0).data := regStatus.io.RF_io.result
 
    /* =================================================*/
    /*  connect CDB to register status unit*/

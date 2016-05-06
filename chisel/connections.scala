@@ -161,12 +161,6 @@ class MainIO() extends Bundle() {
    val func = Bits(INPUT, FUNC_WIDTH)
    val mem_op = Bool(INPUT) // 0: STORE, 1: LOAD
    val mem_siz = Bits(INPUT, width = 2)
-
-   /* ok, write is from perspective of register file */
-   val wdata = Bits(INPUT, DATA_WIDTH)
-   val waddr = Bits(INPUT, REG_BITS)
-   val wvalid = Bool(INPUT)
-   val rdata = Bits(OUTPUT,DATA_WIDTH)
 }
 
 class RegFileIO() extends Bundle() {
