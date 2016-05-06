@@ -44,7 +44,7 @@ class CDB() extends Module {
       io.regstat_io.result:= reg_result
 
 
-  for(i<-0 until RS_NUM-1){
+  for(i<-0 until RS_NUM){
     io.RS_io(i).result_in:= reg_result
     io.RS_io(i).tag_in:= reg_tag
 

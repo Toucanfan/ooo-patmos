@@ -12,7 +12,7 @@ class ReservationStation(RS_id: Int) extends Module {
 
   val st_idle :: st_ready :: st_wait :: st_ack :: Nil = Enum(UInt(),4)
 
-  val reg_st   = Reg(init = st_idle)
+  val reg_st   = Reg(init = st_ready)
   val reg_val_rt = Reg(init = Bits(0, DATA_WIDTH))
   val reg_val_rs = Reg(init = Bits(0, DATA_WIDTH))
   val reg_tag_rt = Reg(init = Bits(0, RS_NUM))
@@ -32,14 +32,14 @@ class ReservationStation(RS_id: Int) extends Module {
 
 
   switch (reg_st){
-  is(st_idle){
+  //is(st_idle){
 
-    reg_st:=st_idle
-    io.issue_io.busy := Bool(false)
-    when (io.ena){
-      reg_st := st_ready
-    }
-  }
+  //  reg_st:=st_idle
+  //  io.issue_io.busy := Bool(false)
+  //  when (io.ena){
+  //    reg_st := st_ready
+  //  }
+  //}
   is(st_ready)   {
     io.issue_io.busy := Bool(false)
     reg_val_rs := io.issue_io.val_rs
